@@ -1,4 +1,8 @@
 import datetime
+import json
+import os
+
+
 
 class event(object):
     def __init__(self, input_end_time, input_start_time):
@@ -72,7 +76,25 @@ def checkCountCalendars(calendar_collection):
     if(calendarCHECK.event_counter == 0):
       count+=1
   return count == len(calendar_collection)
+def getJSONSandcheck():
+  #Curently reads 2 dummy JSON files
+  
 
+  if(os.path.isfile('calendar1.json')):
+        with open('calendar1.json') as data_file:    
+            calendar1_data = json.load(data_file)
+  calendar1 = calendar()
+  calendar1.add_events(calendar1_data)
+
+  if(os.path.isfile('calendar2.json')):
+        with open('calendar2.json') as data_file:    
+            calendar2_data = json.load(data_file)
+  calendar2 = calendar()
+  calendar2.add_events(calendar2_data)
+
+  checkTime(calendar1,calendar2)
+
+getJSONSandcheck()
 ##########--------------------------############
 
 #---Sample Data---#
@@ -120,8 +142,8 @@ person2_data = {
   "timeMin": "2016-09-24T17:36:12.000Z"
 }
 
-calendar1 = calendar()
-calendar1.add_events(person1_data)
-calendar2 = calendar()
-calendar2.add_events(person2_data)
-checkTime(calendar1,calendar2)
+#calendar1 = calendar()
+#calendar1.add_events(person1_data)
+#calendar2 = calendar()
+#calendar2.add_events(person2_data)
+#checkTime(calendar1,calendar2)
