@@ -15,8 +15,6 @@ import argparse
 parser = argparse.ArgumentParser(parents=[tools.argparser])
 flags = parser.parse_args()
 
-# If modifying these scopes, delete your previously saved credentials
-# at ~/.credentials/calendar-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Ember Prototype Google Calendar API Access'
@@ -50,6 +48,11 @@ def get_credentials(user):
 
 
 def get_freebusy_query(user):
+    """Gets the freebusy data from a calendar between now and 24 hours from now.
+
+    Returns:
+        A json that contains all of the times in which the user is busy.
+    """
     credentials = get_credentials(user)
     http = credentials.authorize(httplib2.Http())
 
@@ -76,9 +79,8 @@ def get_freebusy_query(user):
     freebusy_query = request.execute()
     return freebusy_query
 
-
-if __name__ == '__main__':
-    with open('data1.json', 'w') as json_file1:
-        json.dump(get_freebusy_query('1'), json_file1)
-    with open('data2.json', 'w') as json_file2:
-        json.dump(get_freebusy_query('2'), json_file2)
+# creates two separate jsons in the working directory that contain freebusy data
+with open('data1.json', 'w') as json_file1:
+    json.dump(get_freebusy_query('1'), json_file1)
+with open('data2.json', 'w') as json_file2:
+    json.dump(get_freebusy_query('2'), json_file2)
