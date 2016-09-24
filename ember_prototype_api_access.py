@@ -22,7 +22,7 @@ CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Ember Prototype Google Calendar API Access'
 
 
-def get_credentials():
+def get_credentials(user):
     """Gets valid user credentials from storage.
 
     If nothing has been stored, or if the stored credentials are invalid,
@@ -35,9 +35,9 @@ def get_credentials():
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)
     credential_path = os.path.join(credential_dir,
-                                   'calendar-python-quickstart.json')
+                                   'account-credentials-' + user + '.json')
 
-    store = oauth2client.file.Storage(credential_path)  # stores the users credentials --> TODO: put in database
+    store = oauth2client.file.Storage(credential_path)  # stores the users credentials --> TODO: put in database?
     credentials = store.get()
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
@@ -49,8 +49,8 @@ def get_credentials():
     return credentials
 
 
-def main():
-    credentials = get_credentials()
+def get_freebusy_query(user):
+    credentials = get_credentials(user)
     http = credentials.authorize(httplib2.Http())
 
     service = discovery.build('calendar', 'v3', http=http)
@@ -73,10 +73,12 @@ def main():
 
     # POST request to get freebusy data between now and 24 hours from now
     request = service.freebusy().query(body=request_query)
-    availability = request.execute()
-    return availability
+    freebusy_query = request.execute()
+    return freebusy_query
 
 
 if __name__ == '__main__':
-    with open('data.json', 'w') as json_file:
-        json.dump(main(), json_file)
+    with open('data1.json', 'w') as json_file1:
+        json.dump(get_freebusy_query('1'), json_file1)
+    with open('data2.json', 'w') as json_file2:
+        json.dump(get_freebusy_query('2'), json_file2)
