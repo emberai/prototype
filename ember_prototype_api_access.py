@@ -1,6 +1,7 @@
 from __future__ import print_function
 import httplib2
 import os
+import json
 
 from apiclient import discovery
 import oauth2client
@@ -77,4 +78,5 @@ def main():
 
 
 if __name__ == '__main__':
-    print(main())
+    with open('data.json', 'w') as json_file:
+        json.dump(main(), json_file)
