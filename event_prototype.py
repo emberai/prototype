@@ -38,8 +38,9 @@ def checkTime(cal1, cal2):
     calendar_collection.append(cal2)
     free_zones = []
     free_zone_count = 0
-    free = False
+    in_free_time = False
 
+    #I apologize for this disgusting mess
     for hour in range(24):
       for minute in range(60):
         for calendar in calendar_collection:
@@ -49,23 +50,29 @@ def checkTime(cal1, cal2):
             elif (event.event_ends(hour,minute)):
                 calendar.event_counter -= 1
           #check if all cals are free
-          count = 0
-          for calendarCHECK in calendar_collection:
-            if(calendarCHECK.event_counter == 0):
-              count+=1
+          allCalendarsFree = checkCountCalendars(calendar_collection)
           
-          if(count == len(calendar_collection) and not free):
+          if(allCalendarsFree and not in_free_time):
             free_zones.append([(hour,minute)])
-            free = True
-          elif(count != len(calendar_collection) and free):
+            in_free_time = True
+          elif(not allCalendarsFree and in_free_time):
             free_zones[free_zone_count].append((hour,minute))
-            free = False
+            in_free_time = False
             free_zone_count+=1
     #if the 2 cals are free until the end of that day
     if(len(free_zones)%2 != 0):
       free_zones[free_zone_count].append((23,59))
     print free_zones
     return free_zones
+#Params: A list of calendars
+#Returns: If all the calendars are free at the time checked
+def checkCountCalendars(calendar_collection):
+  count = 0
+  for calendarCHECK in calendar_collection:
+    if(calendarCHECK.event_counter == 0):
+      count+=1
+  return count == len(calendar_collection)
+
 ##########--------------------------############
 
 #---Sample Data---#
