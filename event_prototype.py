@@ -4,12 +4,14 @@ class event(object):
     def __init__(self, input_end_time, input_start_time):
         self.end_time = input_end_time
         self.start_time = input_start_time
-
+    #Params: hour and minute ints.
+    #Returns: whether events objects start time is at that time
     def event_starts(self,hour, minute):
         if hour == self.start_time.hour and minute == self.start_time.minute:
             return True
         return False
-
+    #Params: hour and minute ints.
+    #Returns: whether events objects end time is at that time.
     def event_ends(self,hour, minute):
         if hour == self.end_time.hour and minute == self.end_time.minute:
             return True
@@ -17,14 +19,19 @@ class event(object):
 
 
 class calendar(object):
+
     def __init__(self):
         self.my_events = []
         self.event_counter = 0
 
+    #Params: parsed JSON file for individual user (contains all events)
+    #adds all events as objects from provided calendar data set to the calender object
     def add_events(self, data_set):
         for time_set in data_set['calendars']['primary']['busy']:
             self.my_events.append(event(datetime.datetime.strptime(time_set['end'], "%Y-%m-%dT%H:%M:%Sz"), datetime.datetime.strptime(time_set['start'],"%Y-%m-%dT%H:%M:%Sz")))
 
+#Params: 2 calendar objects 
+#Returns: A list of size 2 lists containing start of that free block and the end of that free block.
 def checkTime(cal1, cal2):
     calendar_collection = []
     calendar_collection.append(cal1)
@@ -41,10 +48,12 @@ def checkTime(cal1, cal2):
                 calendar.event_counter +=1
             elif (event.event_ends(hour,minute)):
                 calendar.event_counter -= 1
+          #check if all cals are free
           count = 0
           for calendarCHECK in calendar_collection:
             if(calendarCHECK.event_counter == 0):
               count+=1
+          
           if(count == len(calendar_collection) and not free):
             free_zones.append([(hour,minute)])
             free = True
@@ -52,6 +61,7 @@ def checkTime(cal1, cal2):
             free_zones[free_zone_count].append((hour,minute))
             free = False
             free_zone_count+=1
+    #if the 2 cals are free until the end of that day
     if(len(free_zones)%2 != 0):
       free_zones[free_zone_count].append((23,59))
     print free_zones
